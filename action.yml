@@ -1,5 +1,5 @@
-name: 'Slugify Issue'
-description: 'Create slug from title of Github Issue. Trigger on Issue Update.'
+name: "Slugify Issue"
+description: "Create slug from title of Github Issue. Trigger on Issue Update."
 inputs:
   # who-to-greet:  # id of input
   #   description: 'Who to greet'
@@ -25,9 +25,11 @@ outputs:
   # time: # id of output
   #   description: 'The time we greeted you'
   slug: # id of output
-    description: 'title turned slug'
+    description: "title turned slug"
   issue_number: # id of output
-    description: 'issue number'
+    description: "issue number"
+  needs_update: # id of output
+    description: "Whether or not the KV Store needs to be updated with a new value. Stringified boolean value"
 runs:
-  using: 'node16'
-  main: 'index.js'
+  using: "node16"
+  main: "index.js"
