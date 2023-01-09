@@ -20,9 +20,9 @@ async function run() {
     console.log(`Title: ${issue.title}!`)
     console.log(`Slug: ${slug}!`)
 
-    const res = await updateKey(slug, issue.number, account, namespace, token)
+    // const res = await updateKey(slug, issue.number, account, namespace, token)
 
-    console.log(res)
+    // console.log(res)
     const time = new Date().toTimeString()
 
     core.setOutput("time", time)
