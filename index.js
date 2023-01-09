@@ -3,17 +3,23 @@ const github = require("@actions/github")
 
 try {
   // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput("who-to-greet")
+  // const nameToGreet = core.getInput("who-to-greet")
+  // const issue_title = core.getInput("issue_title")
+
+  // This should be triggerd with the issue, so will have that payload
+  const { issue, number } = payload
   const account = core.getInput("cloudflare_account_id")
   const namespace = core.getInput("cloudflare_namespace_id")
   const token = core.getInput("cloudflare_token")
-  const issue_title = core.getInput("issue_title")
-  console.log(`Hello ${nameToGreet}!`)
+  // console.log(`Hello ${nameToGreet}!`)
+  // console.log(`Title: ${issue_title}!`)
+  console.log(`Slug: ${slugify(issue_title)}!`)
+  console.log(`Slug: ${slugify(issue_title)}!`)
 
   const time = new Date().toTimeString()
   core.setOutput("time", time)
-  core.setOutput("slug", slugify(issue_title))
-  core.setOutput("issue_id", "1")
+  core.setOutput("slug", slugify(issue?.title))
+  core.setOutput("issue_id", number)
 
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)

@@ -1,14 +1,14 @@
 name: 'Hello World'
 description: 'Greet someone and record the time'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
-  issue_title:  # id of input
-    description: 'Title to slugify'
-    required: true
-    default: 'Example Title'
+  # who-to-greet:  # id of input
+  #   description: 'Who to greet'
+  #   required: true
+  #   default: 'World'
+  # issue_title:  # id of input
+  #   description: 'Title to slugify'
+  #   required: true
+  #   default: 'Example Title'
   cloudflare_account_id:  # id of input
     description: 'Cloudflare Account'
     required: true
