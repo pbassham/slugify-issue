@@ -1,6 +1,7 @@
 const core = require("@actions/core")
 const github = require("@actions/github")
 
+// TODO: set up conditions for other trigger actions
 try {
   // This should be triggerd with the issue, so will have that payload
   const { action, issue, changes } = github.context.payload
@@ -16,6 +17,7 @@ try {
     const oldSlug = changes?.title?.from
     if (oldSlug && slug !== slugify(oldSlug)) {
       updateKey = false
+      console.log(`Dont need to update slug.`)
     }
   }
 
