@@ -13,8 +13,8 @@ try {
   const token = core.getInput("cloudflare_token")
   // console.log(`Hello ${nameToGreet}!`)
   // console.log(`Title: ${issue_title}!`)
-  console.log(`Slug: ${slugify(issue_title)}!`)
-  console.log(`Slug: ${slugify(issue_title)}!`)
+  console.log(`Title: ${slugify(issue.title)}!`)
+  console.log(`Slug: ${slugify(issue.title)}!`)
 
   const time = new Date().toTimeString()
   
