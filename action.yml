@@ -26,8 +26,8 @@ outputs:
     description: 'The time we greeted you'
   slug: # id of output
     description: 'title turned slug'
-  issue_id: # id of output
-    description: 'issue id'
+  issue_number: # id of output
+    description: 'issue number'
 runs:
   using: 'node16'
   main: 'index.js'

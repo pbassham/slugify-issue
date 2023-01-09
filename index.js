@@ -20,7 +20,7 @@ try {
   
   core.setOutput("time", time)
   core.setOutput("slug", slugify(issue?.title))
-  core.setOutput("issue_id", number)
+  core.setOutput("issue_number", number)
 
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
