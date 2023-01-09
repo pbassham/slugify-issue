@@ -7,20 +7,20 @@ try {
   // const issue_title = core.getInput("issue_title")
 
   // This should be triggerd with the issue, so will have that payload
-  const { issue, number } = github.context.payload
+  const { issue } = github.context.payload
   const account = core.getInput("cloudflare_account_id")
   const namespace = core.getInput("cloudflare_namespace_id")
   const token = core.getInput("cloudflare_token")
   // console.log(`Hello ${nameToGreet}!`)
   // console.log(`Title: ${issue_title}!`)
-  console.log(`Title: ${slugify(issue.title)}!`)
+  console.log(`Title: ${issue.title}!`)
   console.log(`Slug: ${slugify(issue.title)}!`)
 
   const time = new Date().toTimeString()
-  
+
   core.setOutput("time", time)
   core.setOutput("slug", slugify(issue?.title))
-  core.setOutput("issue_number", number)
+  core.setOutput("issue_number", issue.number)
 
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
