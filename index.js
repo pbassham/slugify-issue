@@ -15,15 +15,18 @@ async function run() {
     const token = core.getInput("cloudflare_token")
     // console.log(`Hello ${nameToGreet}!`)
     // console.log(`Title: ${issue_title}!`)
+    const slug = slugify(issue?.title)
+
     console.log(`Title: ${issue.title}!`)
-    console.log(`Slug: ${slugify(issue.title)}!`)
+    console.log(`Slug: ${slug}!`)
 
     const res = await updateKey(slug, issue.number, account, namespace, token)
 
+    console.log(res)
     const time = new Date().toTimeString()
 
     core.setOutput("time", time)
-    core.setOutput("slug", slugify(issue?.title))
+    core.setOutput("slug", slug)
     core.setOutput("issue_number", issue.number)
 
     // Get the JSON webhook payload for the event that triggered the workflow
