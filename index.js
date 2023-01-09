@@ -17,6 +17,7 @@ try {
   console.log(`Slug: ${slugify(issue_title)}!`)
 
   const time = new Date().toTimeString()
+  
   core.setOutput("time", time)
   core.setOutput("slug", slugify(issue?.title))
   core.setOutput("issue_id", number)
