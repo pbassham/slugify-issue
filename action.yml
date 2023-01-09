@@ -1,6 +1,6 @@
 name: "Slugify Issue"
 description: "Create slug from title of Github Issue. Trigger on Issue Update."
-inputs:
+# inputs:
   # who-to-greet:  # id of input
   #   description: 'Who to greet'
   #   required: true
