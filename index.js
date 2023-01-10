@@ -1,7 +1,8 @@
-const core = require("@actions/core")
-const github = require("@actions/github")
+import core from "@actions/core"
+import github from "@actions/github"
 
 // TODO: set up conditions for other trigger actions
+// TODO: Delete key when issue is deleted
 try {
   // This should be triggerd with the issue, so will have that payload
   const { action, issue, changes } = github.context.payload
