@@ -16,24 +16,35 @@ try {
   const slug = slugify(issue?.title)
   console.log(`Title: ${issue.title}!`)
   console.log(`Slug: ${slug}!`)
+
   let updateKey = true
 
-  const exists = await kv({ key: slug })
-  console.log(exists)
+  const checkKey = await kv({ key: slug })
+  console.log(checkKey)
+  const keyExists = checkKey.result !== null
+  const valuesMatch = checkKey.result == issue.number
 
-  if (action === "edited") {
-    const oldSlug = slugify(changes?.title?.from)
-    console.log(`Old Slug: ${oldSlug}\nNew SLug: ${slug}`)
-    if (oldSlug && slug !== oldSlug) {
-      updateKey = false
-      console.log(`Dont need to update slug.`)
+  if (keyExists && valuesMatch) {
+    console.log(`No update needed for key: ${checkKey.result} -> ${issue.number}`)
+    if (action === "deleted") {
+      deleteSlug(slug)
     }
-  }
-
-  if (action === "deleted") {
-    console.log(`Deleting Slug: ${slug}`)
-    const res = await kv({ key: slug, DELETE: true })
-    console.log(res)
+    return `Done`
+  } else if (keyExists && !valuesMatch) {
+    console.log(`Key '${checkKey.result}' exists, but needs updating to ${issue.number}`)
+    updateSlug(slug, issue.number)
+    if (action === "edited") {
+      const oldSlug = slugify(changes?.title?.from)
+      console.log(`Old Slug: ${oldSlug}\nNew SLug: ${slug}`)
+      if (oldSlug && slug !== oldSlug) {
+        // updateKey = false
+        console.log(`Need to delete old slug: ${oldSlug}`)
+        deleteSlug(oldSlug)
+      }
+    }
+  } else if (!keyExists) {
+    console.log(`Key '${slug}' doesnt exist. `)
+    updateSlug(slug, issue.number)
   }
 
   core.setOutput("slug", slug)
@@ -57,4 +68,20 @@ function slugify(text) {
     .replace(/\s+/g, "-") // Replace spaces with -
     .replace(/[^\w\-]+/g, "") // Remove all non-word chars
     .replace(/\-\-+/g, "-") // Replace multiple - with single -
+}
+
+async function updateSlug(key, value) {
+  console.log(`Updating Slug: ${slug}`)
+  const res = await kv({ key, value })
+  console.log(res)
+  return res
+}
+// async function addSlug(key, value) {
+//   return await kv({ key, value })
+// }
+async function deleteSlug(slug) {
+  console.log(`Deleting Slug: ${slug}`)
+  const res = await kv({ key: slug, DELETE: true })
+  console.log(res)
+  return res
 }
