@@ -12,7 +12,7 @@ try {
   // const account = core.getInput("cloudflare_account_id")
   // const namespace = core.getInput("cloudflare_namespace_id")
   // const namespace = core.getInput("namespace_identifier")
-  // const token = core.getInput("cloudflare_token")
+  const REVALIDATE_TOKEN = core.getInput("revalidate_token")
   const slug = slugify(issue?.title)
   console.log(`Title: ${issue.title} => Slug: ${slug}`)
   // console.log(`Slug: ${slug}!`)
@@ -50,6 +50,7 @@ try {
     }
   }
 
+  await revalidate(slug)
   core.setOutput("slug", slug)
   core.setOutput("issue_number", issue.number)
   // core.setOutput("needsUpdate", updateKey)
@@ -76,8 +77,11 @@ function slugify(text) {
 async function updateSlug(key, value) {
   // console.log(`Updating Key: "${key}" to Value "${value}"`)
   const res = await kv({ key, value })
-  console.log(res)
-  if (!res.success) core.error(res.errors)
+  if (!res.success) {
+    console.log(res)
+    core.error(res.errors)
+    throw res
+  }
   return res
 }
 // async function addSlug(key, value) {
@@ -86,7 +90,14 @@ async function updateSlug(key, value) {
 async function deleteSlug(slug) {
   // console.log(`Deleting Slug: ${slug}`)
   const res = await kv({ key: slug, DELETE: true })
-  if (!res.success) core.error(res.errors)
-  console.log(res)
+  if (!res.success) {
+    console.log(res)
+    core.error(res.errors)
+    throw res
+  }
   return res
+}
+
+async function revalidate(slug) {
+  return await fetch(`https://www.philbassham.com/api/revalidate?secret${REVALIDATE_TOKEN}&slug=${slug}`)
 }

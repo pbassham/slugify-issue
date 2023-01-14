@@ -21,6 +21,8 @@ inputs:
   #   description: 'API Key for Cloudflare'
   #   required: true
   #   default: '789'
+  revalidate_token:
+    required: false
 outputs:
   # time: # id of output
   #   description: 'The time we greeted you'
