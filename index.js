@@ -1,11 +1,14 @@
 import core from "@actions/core"
 import github from "@actions/github"
+import kv from "./cloudflare"
 
 // TODO: set up conditions for other trigger actions
 // TODO: Delete key when issue is deleted
 try {
   // This should be triggerd with the issue, so will have that payload
   const { action, issue, changes } = github.context.payload
+  // Cloudflare
+
   // const account = core.getInput("cloudflare_account_id")
   // const namespace = core.getInput("cloudflare_namespace_id")
   // const token = core.getInput("cloudflare_token")
@@ -14,12 +17,21 @@ try {
   console.log(`Slug: ${slug}!`)
   const updateKey = true
 
+  const exists = await kv({ key: slug })
+  console.log(exists)
+
   if (action === "edited") {
     const oldSlug = changes?.title?.from
     if (oldSlug && slug !== slugify(oldSlug)) {
       updateKey = false
       console.log(`Dont need to update slug.`)
     }
+  }
+
+  if (action === "deleted") {
+    console.log(`Deleting Slug: ${slug}`)
+    const res = await kv({ key: slug, DELETE: true })
+    console.log(res)
   }
 
   core.setOutput("slug", slug)
