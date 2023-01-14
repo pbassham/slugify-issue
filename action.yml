@@ -1,6 +1,6 @@
 name: "Slugify Issue"
 description: "Create slug from title of Github Issue. Trigger on Issue Update."
-# inputs:
+inputs:
   # who-to-greet:  # id of input
   #   description: 'Who to greet'
   #   required: true
@@ -13,10 +13,10 @@ description: "Create slug from title of Github Issue. Trigger on Issue Update."
   #   description: 'Cloudflare Account'
   #   required: true
   #   default: '123'
-  # cloudflare_namespace_id:  # id of input
-  #   description: 'Namespace'
-  #   required: true
-  #   default: '456'
+  namespace_identifier:  # id of input
+    description: 'Namespace'
+    required: true
+    default: '456'
   # cloudflare_token:  # id of input
   #   description: 'API Key for Cloudflare'
   #   required: true
