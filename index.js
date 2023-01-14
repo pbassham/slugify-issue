@@ -11,19 +11,20 @@ try {
 
   // const account = core.getInput("cloudflare_account_id")
   // const namespace = core.getInput("cloudflare_namespace_id")
-  const namespace = core.getInput("namespace_identifier")
+  // const namespace = core.getInput("namespace_identifier")
   // const token = core.getInput("cloudflare_token")
   const slug = slugify(issue?.title)
   console.log(`Title: ${issue.title}!`)
   console.log(`Slug: ${slug}!`)
-  const updateKey = true
+  let updateKey = true
 
   const exists = await kv({ key: slug })
   console.log(exists)
 
   if (action === "edited") {
-    const oldSlug = changes?.title?.from
-    if (oldSlug && slug !== slugify(oldSlug)) {
+    const oldSlug = slugify(changes?.title?.from)
+    console.log(`Old Slug: ${oldSlug}\nNew SLug: ${slug}`)
+    if (oldSlug && slug !== oldSlug) {
       updateKey = false
       console.log(`Dont need to update slug.`)
     }
