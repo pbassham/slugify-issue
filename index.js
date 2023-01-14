@@ -1,6 +1,6 @@
 import core from "@actions/core"
 import github from "@actions/github"
-import kv from "./cloudflare"
+import kv from "./cloudflare.js"
 
 // TODO: set up conditions for other trigger actions
 // TODO: Delete key when issue is deleted
