@@ -20,11 +20,11 @@ try {
   // let updateKey = true
 
   const checkKey = await kv({ key: slug })
-  console.log(`Value of ${slug}: ${checkKey.result}`)
-  if (!checkKey.success) {
-    console.log(checkKey)
-    core.notice(checkKey.errors)
-  }
+  // console.log(`Value of ${slug}: ${checkKey.result}`)
+  // if (!checkKey.success) {
+  //   console.log(checkKey)
+  //   core.notice(checkKey.errors)
+  // }
   const keyExists = checkKey.result !== null
   const valuesMatch = checkKey.result == issue.number
 
@@ -77,6 +77,7 @@ async function updateSlug(key, value) {
   // console.log(`Updating Key: "${key}" to Value "${value}"`)
   const res = await kv({ key, value })
   console.log(res)
+  if (!res.success) core.error(res.errors)
   return res
 }
 // async function addSlug(key, value) {
@@ -85,6 +86,7 @@ async function updateSlug(key, value) {
 async function deleteSlug(slug) {
   // console.log(`Deleting Slug: ${slug}`)
   const res = await kv({ key: slug, DELETE: true })
+  if (!res.success) core.error(res.errors)
   console.log(res)
   return res
 }
