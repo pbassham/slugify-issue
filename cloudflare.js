@@ -83,6 +83,7 @@ export default async function kv({
     : {
         Authorization: `Bearer ${apiKey}`,
       }
+  console.log(`kv key: ${key} value:${value}`)
   if (DELETE === true) {
     core.info(`DELETING value for ${key}`)
     return del(kvUrl, headers, value, expirationTtl)
