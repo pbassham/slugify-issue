@@ -28,8 +28,8 @@ outputs:
     description: "title turned slug"
   issue_number: # id of output
     description: "issue number"
-  needs_update: # id of output
-    description: "Whether or not the KV Store needs to be updated with a new value. Stringified boolean value"
+  # needs_update: # id of output
+  #   description: "Whether or not the KV Store needs to be updated with a new value. Stringified boolean value"
 runs:
   using: "node16"
   main: "index.js"

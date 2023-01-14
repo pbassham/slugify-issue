@@ -86,18 +86,18 @@ export default async function kv({
     : {
         Authorization: `Bearer ${apiKey}`,
       }
-  console.log(`kv key: ${key} value:${value}`)
+//   console.log(`kv key: ${key} value:${value}`)
   if (DELETE === true) {
-    core.info(`DELETING value for ${key}`)
+    core.info(`DELETING value for Key: "${key}"`)
     return del(kvUrl, headers, value, expirationTtl)
   } else if (
     value
     // && (value.length > 0 || Object.keys(value).length > 0)
   ) {
-    core.info(`Setting value for ${key}`)
+    core.info(`Setting value for "${key}" to "${value}"`)
     return set(kvUrl, headers, value, expirationTtl)
   } else {
-    core.info(`Getting value for ${key}`)
+    core.info(`Getting value for Key: "${key}"`)
     return get(kvUrl, headers)
   }
 }

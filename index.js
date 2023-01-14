@@ -14,13 +14,13 @@ try {
   // const namespace = core.getInput("namespace_identifier")
   // const token = core.getInput("cloudflare_token")
   const slug = slugify(issue?.title)
-  console.log(`Title: ${issue.title}!`)
-  console.log(`Slug: ${slug}!`)
+  console.log(`Title: ${issue.title} => Slug: ${slug}`)
+  // console.log(`Slug: ${slug}!`)
 
-  let updateKey = true
+  // let updateKey = true
 
   const checkKey = await kv({ key: slug })
-  console.log(checkKey)
+  // console.log(checkKey)
   const keyExists = checkKey.result !== null
   const valuesMatch = checkKey.result == issue.number
 
@@ -39,7 +39,7 @@ try {
   }
   if (action === "edited") {
     const oldSlug = slugify(changes?.title?.from)
-    console.log(`Old Slug: ${oldSlug}\nNew SLug: ${slug}`)
+    console.log(`Old Slug: "${oldSlug}"  New Slug: "${slug}"`)
     if (oldSlug && slug !== oldSlug) {
       // updateKey = false
       console.log(`Need to delete old slug: ${oldSlug}`)
@@ -49,11 +49,11 @@ try {
 
   core.setOutput("slug", slug)
   core.setOutput("issue_number", issue.number)
-  core.setOutput("needsUpdate", updateKey)
+  // core.setOutput("needsUpdate", updateKey)
 
   // Get the JSON webhook payload for the event that triggered the workflow
   const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`)
+  console.log(`\nThe event payload: ${payload}`)
 } catch (error) {
   core.setFailed(error.message)
 }
@@ -71,7 +71,7 @@ function slugify(text) {
 }
 
 async function updateSlug(key, value) {
-  console.log(`Updating Slug: ${key} to ${value}`)
+  // console.log(`Updating Key: "${key}" to Value "${value}"`)
   const res = await kv({ key, value })
   console.log(res)
   return res
@@ -80,7 +80,7 @@ async function updateSlug(key, value) {
 //   return await kv({ key, value })
 // }
 async function deleteSlug(slug) {
-  console.log(`Deleting Slug: ${slug}`)
+  // console.log(`Deleting Slug: ${slug}`)
   const res = await kv({ key: slug, DELETE: true })
   console.log(res)
   return res
