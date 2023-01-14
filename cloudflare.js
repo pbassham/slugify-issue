@@ -87,7 +87,9 @@ export default async function kv({
   if (DELETE === true) {
     core.info(`DELETING value for ${key}`)
     return del(kvUrl, headers, value, expirationTtl)
-  } else if (value && (value.length > 0 || Object.keys(value).length > 0)) {
+  } else if (value 
+    // && (value.length > 0 || Object.keys(value).length > 0)
+    ) {
     core.info(`Setting value for ${key}`)
     return set(kvUrl, headers, value, expirationTtl)
   } else {
@@ -95,3 +97,5 @@ export default async function kv({
     return get(kvUrl, headers)
   }
 }
+// var r=34
+// console.log(r,r.length)
