@@ -20,15 +20,18 @@ try {
   // let updateKey = true
 
   const checkKey = await kv({ key: slug })
-  // console.log(checkKey)
+  console.log(`Value of ${key}: ${checkKey.result}`)
+  if (!checkKey.success) {
+    console.log(checkKey)
+    core.warning(checkKey.errors)
+  }
   const keyExists = checkKey.result !== null
   const valuesMatch = checkKey.result == issue.number
 
-  if (keyExists && valuesMatch) {
+  if (action === "deleted" && keyExists) {
+    await deleteSlug(slug)
+  } else if (keyExists && valuesMatch) {
     console.log(`No update needed for key: ${checkKey.result} -> ${issue.number}`)
-    if (action === "deleted") {
-      await deleteSlug(slug)
-    }
     // return //`Done`
   } else if (keyExists && !valuesMatch) {
     console.log(`Key '${checkKey.result}' exists, but needs updating to ${issue.number}`)
