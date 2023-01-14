@@ -100,5 +100,9 @@ async function deleteSlug(slug) {
 
 async function revalidate(slug) {
   const REVALIDATE_TOKEN = core.getInput("revalidate_token")
-  return await fetch(`https://www.philbassham.com/api/revalidate?secret${REVALIDATE_TOKEN}&slug=${slug}`)
+  console.log(`Revalidating link: ${slug}`)
+  const res = await fetch(`https://www.philbassham.com/api/revalidate?secret${REVALIDATE_TOKEN}&slug=${slug}`)
+  if (!res.ok) throw res
+  const json = await res.json()
+  return json
 }
