@@ -23,7 +23,7 @@ try {
   console.log(`Value of ${key}: ${checkKey.result}`)
   if (!checkKey.success) {
     console.log(checkKey)
-    core.warning(checkKey.errors)
+    core.notice(checkKey.errors)
   }
   const keyExists = checkKey.result !== null
   const valuesMatch = checkKey.result == issue.number
