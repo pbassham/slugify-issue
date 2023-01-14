@@ -13,7 +13,6 @@ try {
   // const account = core.getInput("cloudflare_account_id")
   // const namespace = core.getInput("cloudflare_namespace_id")
   // const namespace = core.getInput("namespace_identifier")
-  const REVALIDATE_TOKEN = core.getInput("revalidate_token")
   const slug = slugify(issue?.title)
   console.log(`Title: ${issue.title} => Slug: ${slug}`)
   // console.log(`Slug: ${slug}!`)
@@ -100,5 +99,6 @@ async function deleteSlug(slug) {
 }
 
 async function revalidate(slug) {
+  const REVALIDATE_TOKEN = core.getInput("revalidate_token")
   return await fetch(`https://www.philbassham.com/api/revalidate?secret${REVALIDATE_TOKEN}&slug=${slug}`)
 }
