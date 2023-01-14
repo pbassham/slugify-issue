@@ -71,7 +71,7 @@ function slugify(text) {
 }
 
 async function updateSlug(key, value) {
-  console.log(`Updating Slug: ${slug}`)
+  console.log(`Updating Slug: ${key} to ${value}`)
   const res = await kv({ key, value })
   console.log(res)
   return res
