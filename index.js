@@ -11,6 +11,7 @@ try {
 
   // const account = core.getInput("cloudflare_account_id")
   // const namespace = core.getInput("cloudflare_namespace_id")
+  const namespace = core.getInput("namespace_identifier")
   // const token = core.getInput("cloudflare_token")
   const slug = slugify(issue?.title)
   console.log(`Title: ${issue.title}!`)
