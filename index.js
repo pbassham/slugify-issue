@@ -27,24 +27,24 @@ try {
   if (keyExists && valuesMatch) {
     console.log(`No update needed for key: ${checkKey.result} -> ${issue.number}`)
     if (action === "deleted") {
-      deleteSlug(slug)
+      await deleteSlug(slug)
     }
     // return //`Done`
   } else if (keyExists && !valuesMatch) {
     console.log(`Key '${checkKey.result}' exists, but needs updating to ${issue.number}`)
-    updateSlug(slug, issue.number)
+    await updateSlug(slug, issue.number)
     if (action === "edited") {
       const oldSlug = slugify(changes?.title?.from)
       console.log(`Old Slug: ${oldSlug}\nNew SLug: ${slug}`)
       if (oldSlug && slug !== oldSlug) {
         // updateKey = false
         console.log(`Need to delete old slug: ${oldSlug}`)
-        deleteSlug(oldSlug)
+        await deleteSlug(oldSlug)
       }
     }
   } else if (!keyExists) {
     console.log(`Key '${slug}' doesnt exist. `)
-    updateSlug(slug, issue.number)
+    await updateSlug(slug, issue.number)
   }
 
   core.setOutput("slug", slug)
