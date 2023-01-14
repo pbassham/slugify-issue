@@ -29,7 +29,7 @@ try {
     if (action === "deleted") {
       deleteSlug(slug)
     }
-    return //`Done`
+    // return //`Done`
   } else if (keyExists && !valuesMatch) {
     console.log(`Key '${checkKey.result}' exists, but needs updating to ${issue.number}`)
     updateSlug(slug, issue.number)
