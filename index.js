@@ -20,10 +20,10 @@ try {
   // let updateKey = true
 
   const checkKey = await kv({ key: slug })
-  console.log(`Value of ${key}: ${checkKey.result}`)
+  console.log(`Value of ${slug}: ${checkKey.result}`)
   if (!checkKey.success) {
     console.log(checkKey)
-    // core.notice(checkKey.errors)
+    core.notice(checkKey.errors)
   }
   const keyExists = checkKey.result !== null
   const valuesMatch = checkKey.result == issue.number
