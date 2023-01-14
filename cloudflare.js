@@ -30,13 +30,16 @@ async function set(kvUrl, headers, value, expiration, expirationTtl) {
     }
   }
 
-  await fetch(url, {
+  const response = await fetch(url, {
     method: "PUT",
     body: value,
     headers,
   })
+  const data = await response.text()
+  const json = JSON.parse(data)
+  return json
 
-  return null
+  //   return null
 }
 
 async function get(kvUrl, headers) {
@@ -87,9 +90,10 @@ export default async function kv({
   if (DELETE === true) {
     core.info(`DELETING value for ${key}`)
     return del(kvUrl, headers, value, expirationTtl)
-  } else if (value 
+  } else if (
+    value
     // && (value.length > 0 || Object.keys(value).length > 0)
-    ) {
+  ) {
     core.info(`Setting value for ${key}`)
     return set(kvUrl, headers, value, expirationTtl)
   } else {
