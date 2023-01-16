@@ -59,7 +59,7 @@ async function get(key) {
   const data = await response.text()
   return JSON.parse(data)
 }
-async function del(key) {
+async function del(key, value) {
   const kvUrl = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
   const response = await fetch(kvUrl, {
     headers,
@@ -73,18 +73,11 @@ async function del(key) {
   return JSON.parse(data)
 }
 
-export default async function kv({
-  key,
-  value,
-  expiration,
-  expirationTtl,
-  DELETE,
-  //
-}) {
+export default async function kv({ key, value, expiration, expirationTtl, DELETE }) {
   //   console.log(`kv key: ${key} value:${value}`)
   if (DELETE === true) {
     core.info(`DELETING value for Key: "${key}"`)
-    return del(key, value, expirationTtl)
+    return del(key, value)
   } else if (
     value
     // && (value.length > 0 || Object.keys(value).length > 0)
@@ -96,5 +89,3 @@ export default async function kv({
     return get(key)
   }
 }
-// var r=34
-// console.log(r,r.length)
