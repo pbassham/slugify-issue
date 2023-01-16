@@ -1,7 +1,7 @@
 import core from "@actions/core"
 import github from "@actions/github"
 import kv from "./cloudflare.js"
-import fetch from "node-fetch"
+// import fetch from "node-fetch"
 
 // TODO: set up conditions for other trigger actions
 // TODO: Delete key when issue is deleted
@@ -50,7 +50,7 @@ try {
     }
   }
 
-  await revalidate(slug)
+  // await revalidate(slug)
   core.setOutput("slug", slug)
   core.setOutput("issue_number", issue.number)
   // core.setOutput("needsUpdate", updateKey)
@@ -98,11 +98,11 @@ async function deleteSlug(slug) {
   return res
 }
 
-async function revalidate(slug) {
-  const REVALIDATE_TOKEN = core.getInput("revalidate_token")
-  console.log(`Revalidating link: ${slug}`)
-  const res = await fetch(`https://www.philbassham.com/api/revalidate?secret${REVALIDATE_TOKEN}&slug=${slug}`)
-  if (!res.ok) throw res
-  const json = await res.json()
-  return json
-}
+// async function revalidate(slug) {
+//   const REVALIDATE_TOKEN = core.getInput("revalidate_token")
+//   console.log(`Revalidating link: ${slug}`)
+//   const res = await fetch(`https://www.philbassham.com/api/revalidate?secret${REVALIDATE_TOKEN}&slug=${slug}`)
+//   if (!res.ok) throw res
+//   const json = await res.json()
+//   return json
+// }
