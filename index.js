@@ -40,10 +40,9 @@ try {
   }
   if (action === "edited") {
     const oldSlug = slugify(changes?.title?.from)
-    console.log(`Old Slug: "${oldSlug}"  New Slug: "${slug}"`)
     if (oldSlug && slug !== oldSlug) {
-      // updateKey = false
-      console.log(`Need to delete old slug: ${oldSlug}`)
+      console.log(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`)
+      // console.log(`Need to delete old slug: ${oldSlug}`)
       await deleteSlug(oldSlug)
     }
   }

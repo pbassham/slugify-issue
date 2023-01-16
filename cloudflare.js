@@ -43,7 +43,7 @@ async function set(key, value, expiration, expirationTtl) {
     body: value,
     headers,
   })
-  if (response.ok) console.log(`SET ${key} : ${value}`)
+  if (response.ok) console.log(`...SET SUCCESSFULLY: ${key} : ${value}`)
   const data = await response.text()
   return JSON.parse(data)
 }
@@ -55,7 +55,7 @@ async function get(key) {
     responseType: "json",
     responseEncoding: "utf8",
   })
-  if (response.ok) console.log(`FETCHED ${key} : ${value}`)
+  if (response.ok) console.log(`...FETCHED SUCCESSFULLY: ${key} : ${value}`)
   const data = await response.text()
   return JSON.parse(data)
 }
@@ -67,7 +67,7 @@ async function del(key, value) {
     responseType: "json",
     responseEncoding: "utf8",
   })
-  if (response.ok) console.log(`DELETED ${key} : ${value}`)
+  if (response.ok) console.log(`...DELETED SUCCESSFULLY: ${key}`)
 
   const data = await response.text()
   return JSON.parse(data)
@@ -82,10 +82,10 @@ export default async function kv({ key, value, expiration, expirationTtl, DELETE
     value
     // && (value.length > 0 || Object.keys(value).length > 0)
   ) {
-    core.info(`Setting value for "${key}" to "${value}"`)
+    core.info(`SETTING value for "${key}" to "${value}"`)
     return set(key, value, expirationTtl)
   } else {
-    core.info(`Getting value for Key: "${key}"`)
+    core.info(`FETCHING value for Key: "${key}"`)
     return get(key)
   }
 }
