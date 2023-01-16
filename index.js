@@ -61,6 +61,7 @@ try {
 // }
 
 function slugify(text) {
+  if (text && typeof text === "string") return null
   return text
     .toString() // Cast to string (optional)
     .normalize("NFKD") // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
