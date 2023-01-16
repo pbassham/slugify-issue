@@ -7,12 +7,20 @@ const apiKey = process.env.CLOUDFLARE_API_KEY
 const accountEmail = process.env.CLOUDFLARE_ACCOUNT_EMAIL
 
 const namespaceId = core.getInput("namespace_identifier")
+const headers = accountEmail
+  ? {
+      "X-Auth-Key": apiKey,
+      "X-Auth-Email": accountEmail,
+    }
+  : {
+      Authorization: `Bearer ${apiKey}`,
+    }
 // const key = core.getInput("key_name")
 // const value = core.getInput("value")
 // const expirationTtl = core.getInput("expiration_ttl")
 // const expiration = core.getInput("expiration")
-async function set(kvUrl, headers, value, expiration, expirationTtl) {
-  let url = kvUrl
+async function set(key, value, expiration, expirationTtl) {
+  let url = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
 
   headers["Content-Type"] = "text/plain"
 
@@ -35,40 +43,42 @@ async function set(kvUrl, headers, value, expiration, expirationTtl) {
     body: value,
     headers,
   })
+  if (response.ok) {
+    console.log(`SET ${key} : ${value}`)
+  }
   const data = await response.text()
-  const json = JSON.parse(data)
-  return json
-
-  //   return null
+  return JSON.parse(data)
 }
 
-async function get(kvUrl, headers) {
+async function get(key) {
+  const kvUrl = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
   const response = await fetch(kvUrl, {
     headers,
     responseType: "json",
     responseEncoding: "utf8",
   })
+  if (response.ok) {
+    console.log(`FETCHED ${key} : ${value}`)
+  }
   const data = await response.text()
-  const json = JSON.parse(data)
-  return json
+  return JSON.parse(data)
 }
-async function del(kvUrl, headers) {
+async function del(key) {
+  const kvUrl = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
   const response = await fetch(kvUrl, {
     headers,
     method: "DELETE",
     responseType: "json",
     responseEncoding: "utf8",
   })
+  if (response.ok) {
+    console.log(`DELETED ${key} : ${value}`)
+  }
   const data = await response.text()
-  const json = JSON.parse(data)
-  return json
+  return JSON.parse(data)
 }
 
 export default async function kv({
-  //   accountId,
-  //   accountEmail,
-  //   apiKey,
-  //   namespaceId,
   key,
   value,
   expiration,
@@ -76,29 +86,19 @@ export default async function kv({
   DELETE,
   //
 }) {
-  const kvUrl = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
-
-  const headers = accountEmail
-    ? {
-        "X-Auth-Key": apiKey,
-        "X-Auth-Email": accountEmail,
-      }
-    : {
-        Authorization: `Bearer ${apiKey}`,
-      }
-//   console.log(`kv key: ${key} value:${value}`)
+  //   console.log(`kv key: ${key} value:${value}`)
   if (DELETE === true) {
     core.info(`DELETING value for Key: "${key}"`)
-    return del(kvUrl, headers, value, expirationTtl)
+    return del(key, value, expirationTtl)
   } else if (
     value
     // && (value.length > 0 || Object.keys(value).length > 0)
   ) {
     core.info(`Setting value for "${key}" to "${value}"`)
-    return set(kvUrl, headers, value, expirationTtl)
+    return set(key, value, expirationTtl)
   } else {
     core.info(`Getting value for Key: "${key}"`)
-    return get(kvUrl, headers)
+    return get(key)
   }
 }
 // var r=34
