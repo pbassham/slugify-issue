@@ -1,37 +1,15 @@
 name: "Slugify Issue"
 description: "Create slug from title of Github Issue. Trigger on Issue Update."
 inputs:
-  # who-to-greet:  # id of input
-  #   description: 'Who to greet'
-  #   required: true
-  #   default: 'World'
-  # issue_title:  # id of input
-  #   description: 'Title to slugify'
-  #   required: true
-  #   default: 'Example Title'
-  # cloudflare_account_id:  # id of input
-  #   description: 'Cloudflare Account'
-  #   required: true
-  #   default: '123'
-  namespace_identifier:  # id of input
-    description: 'Namespace'
+  namespace_identifier: # id of input
+    description: "Cloudflare Namespace Identifier"
     required: true
-    default: '456'
-  # cloudflare_token:  # id of input
-  #   description: 'API Key for Cloudflare'
-  #   required: true
-  #   default: '789'
-  # revalidate_token:
-  #   required: false
+    default: "456"
 outputs:
-  # time: # id of output
-  #   description: 'The time we greeted you'
   slug: # id of output
-    description: "title turned slug"
+    description: "Title of Issue turned slug"
   issue_number: # id of output
-    description: "issue number"
-  # needs_update: # id of output
-  #   description: "Whether or not the KV Store needs to be updated with a new value. Stringified boolean value"
+    description: "Issue number"
 runs:
   using: "node16"
   main: "index.js"
