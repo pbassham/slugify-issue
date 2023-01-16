@@ -64,6 +64,8 @@ try {
 // }
 
 function slugify(text) {
+  console.log(text);
+  console.log(typeof text);
   if (text && typeof text === "string") return null
   return text
     .toString() // Cast to string (optional)
