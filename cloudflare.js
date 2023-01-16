@@ -43,9 +43,7 @@ async function set(key, value, expiration, expirationTtl) {
     body: value,
     headers,
   })
-  if (!response.ok) {
-    throw response
-  } else console.log(`SET ${key} : ${value}`)
+  if (response.ok) console.log(`SET ${key} : ${value}`)
   const data = await response.text()
   return JSON.parse(data)
 }
@@ -57,9 +55,7 @@ async function get(key) {
     responseType: "json",
     responseEncoding: "utf8",
   })
-  if (!response.ok) {
-    throw response
-  } else console.log(`FETCHED ${key} : ${value}`)
+  if (response.ok) console.log(`FETCHED ${key} : ${value}`)
   const data = await response.text()
   return JSON.parse(data)
 }
@@ -71,9 +67,7 @@ async function del(key) {
     responseType: "json",
     responseEncoding: "utf8",
   })
-  if (!response.ok) {
-    throw response
-  } else console.log(`DELETED ${key} : ${value}`)
+  if (response.ok) console.log(`DELETED ${key} : ${value}`)
 
   const data = await response.text()
   return JSON.parse(data)
@@ -87,23 +81,19 @@ export default async function kv({
   DELETE,
   //
 }) {
-  try {
-    //   console.log(`kv key: ${key} value:${value}`)
-    if (DELETE === true) {
-      core.info(`DELETING value for Key: "${key}"`)
-      return del(key, value, expirationTtl)
-    } else if (
-      value
-      // && (value.length > 0 || Object.keys(value).length > 0)
-    ) {
-      core.info(`Setting value for "${key}" to "${value}"`)
-      return set(key, value, expirationTtl)
-    } else {
-      core.info(`Getting value for Key: "${key}"`)
-      return get(key)
-    }
-  } catch (error) {
-    core.error(error)
+  //   console.log(`kv key: ${key} value:${value}`)
+  if (DELETE === true) {
+    core.info(`DELETING value for Key: "${key}"`)
+    return del(key, value, expirationTtl)
+  } else if (
+    value
+    // && (value.length > 0 || Object.keys(value).length > 0)
+  ) {
+    core.info(`Setting value for "${key}" to "${value}"`)
+    return set(key, value, expirationTtl)
+  } else {
+    core.info(`Getting value for Key: "${key}"`)
+    return get(key)
   }
 }
 // var r=34
