@@ -3,8 +3,6 @@ import github from "@actions/github"
 import kv from "./cloudflare.js"
 // import fetch from "node-fetch"
 
-// TODO: set up conditions for other trigger actions
-// TODO: Delete key when issue is deleted
 try {
   // This should be triggerd with the issue, so will have that payload
   const { action, issue, changes } = github.context.payload
