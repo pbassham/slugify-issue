@@ -55,8 +55,9 @@ async function get(key) {
     responseType: "json",
     responseEncoding: "utf8",
   })
-  if (response.ok) console.log(`...FETCHED SUCCESSFULLY: ${key} : ${value}`)
   const data = await response.text()
+  if (response.ok) console.log(`...FETCHED SUCCESSFULLY: ${key}: ${data}`)
+
   return JSON.parse(data)
 }
 async function del(key) {
@@ -68,7 +69,6 @@ async function del(key) {
     responseEncoding: "utf8",
   })
   if (response.ok) console.log(`...DELETED SUCCESSFULLY: ${key}`)
-
   const data = await response.text()
   return JSON.parse(data)
 }
