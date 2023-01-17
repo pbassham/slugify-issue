@@ -24,7 +24,7 @@ async function run(): Promise<void> {
     let result = undefined
     // const checkKey = await kv({ key: slug })
     const checkKey = await get({ key: slug })
-    console.log(checkKey, typeof checkKey, typeof issue.number)
+    // console.log(checkKey, typeof checkKey, typeof issue.number)
     if (typeof checkKey === "string") {
       result = checkKey
       keyExists = true
@@ -70,11 +70,16 @@ async function run(): Promise<void> {
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`\nThe event payload: ${payload}`)
+    core.startGroup(`The Event Payload`)
+    core.info(`\nThe event payload: ${payload}`)
+    core.endGroup()
   } catch (error) {
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.error(`\nThe event payload: ${payload}`)
+    core.startGroup(`The Event Payload`)
+    core.info(`\nThe event payload: ${payload}`)
+    core.endGroup()
+    // console.error(`\nThe event payload: ${payload}`)
     //@ts-expect-error
     core.setFailed(error?.message)
   }
