@@ -57,7 +57,7 @@ const namespaceId = core.getInput("namespace_identifier");
 // const value = core.getInput("value")
 // const expirationTtl = core.getInput("expiration_ttl")
 // const expiration = core.getInput("expiration")
-async function set({ key, value, expiration, expirationTtl, }) {
+async function set({ key, value, expiration, expirationTtl }) {
     core.info(`SETTING value for "${key}" to "${value}"`);
     let url = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`;
     // headers["Content-Type"] = "text/plain"
@@ -167,55 +167,44 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 //@ts-nocheck
-// import core from "@actions/core"
 const github = __importStar(__nccwpck_require__(5438));
 const cloudflare_1 = __nccwpck_require__(5588);
-// import fetch from "node-fetch"
 async function run() {
     var _a;
+    let keyExists = undefined;
+    let valuesMatch = undefined;
+    let result = undefined;
     try {
         // This should be triggerd with the issue, so will have that payload
         const { action, issue, changes } = github.context.payload;
-        // Cloudflare
         if (!issue)
             throw `No Issue input`;
-        // const account = core.getInput("cloudflare_account_id")
-        // const namespace = core.getInput("cloudflare_namespace_id")
-        // const namespace = core.getInput("namespace_identifier")
         const slug = slugify(issue === null || issue === void 0 ? void 0 : issue.title);
         if (!slug)
             throw `Slug not defined: ${slug}`;
         console.log(`Title: ${issue.title} => Slug: ${slug}`);
-        // console.log(`Slug: ${slug}!`)
-        // let updateKey = true
-        let keyExists = undefined;
-        let valuesMatch = undefined;
-        let result = undefined;
-        // const checkKey = await kv({ key: slug })
+        // See if value exists already
         const checkKey = await (0, cloudflare_1.get)({ key: slug });
         // console.log(checkKey, typeof checkKey, typeof issue.number)
         if (typeof checkKey === "string") {
+            // If Value exists, it will be a string
             result = checkKey;
             keyExists = true;
             valuesMatch = checkKey == issue.number.toString();
         }
         else if (typeof checkKey === "object") {
+            // Value not found
             result = checkKey.result;
             keyExists = checkKey.result !== null;
             valuesMatch = checkKey.result == issue.number;
         }
         // console.log(result, keyExists, valuesMatch)
-        // console.log(`Value of ${slug}: ${checkKey.result}`)
-        // if (!checkKey.success) {
-        //   console.log(checkKey)
-        //   core.notice(checkKey.errors)
-        // }
+        // Update Value on Cloudflare KV
         if (action === "deleted" && keyExists) {
             await (0, cloudflare_1.del)({ key: slug });
         }
         else if (keyExists && valuesMatch) {
             console.log(`No update needed for key: ${result} -> ${issue.number}`);
-            // return //`Done`
         }
         else if (keyExists && !valuesMatch) {
             console.log(`Key '${result}' exists, but needs updating to ${issue.number}`);
@@ -224,13 +213,12 @@ async function run() {
         else if (!keyExists) {
             console.log(`Key '${slug}' doesnt exist. `);
             await (0, cloudflare_1.set)({ key: slug, value: issue.number });
-            // await updateSlug(slug, issue.number)
         }
+        // Delete previous Slug on Issue title change
         if (action === "edited") {
             const oldSlug = slugify((_a = changes === null || changes === void 0 ? void 0 : changes.title) === null || _a === void 0 ? void 0 : _a.from);
             if (oldSlug && slug !== oldSlug) {
-                console.log(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`);
-                // console.log(`Need to delete old slug: ${oldSlug}`)
+                core.info(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`);
                 await (0, cloudflare_1.del)({ key: oldSlug });
             }
         }

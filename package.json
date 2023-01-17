@@ -1,7 +1,7 @@
 {
   "name": "slugify-issue",
   "version": "1.0.0",
-  "description": "This action prints \"Hello World\" or \"Hello\" + the name of a person to greet to the log.",
+  "description": "This action creates slugs for Github issues and uploads Key/Values to Cloudflare KV. Useful to access issues by a slug when using Issues as a CMS.",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/hello-world-javascript-action.git"
+    "url": "git+https://github.com/pbassham/slugify-issue.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/actions/hello-world-javascript-action/issues"
+    "url": "https://github.com/pbassham/slugify-issue/issues"
   },
-  "homepage": "https://github.com/actions/hello-world-javascript-action#readme",
+  "homepage": "https://github.com/pbassham/slugify-issue#readme",
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",

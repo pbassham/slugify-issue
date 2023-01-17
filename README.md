@@ -4,13 +4,21 @@ This action creates slugs for Github Issues and updates the key-value store in C
 
 Useful for using Github issues as a CMS of sorts and need to fetch the content by the slug rather than the issue number.
 
-It was bootstrapped with "[Creating a JavaScript action](https://help.github.com/en/articles/creating-a-javascript-action)" in the GitHub Help documentation.
+## Environment Variables
 
-<!-- ## Inputs
+### `CLOUDFLARE_ACCOUNT_ID`
 
-### `who-to-greet`
+**Required** The Cloudflare Account that hosts the KV worker.
 
-**Required** The name of the person to greet. Default `"World"`. -->
+### `CLOUDFLARE_API_KEY`
+
+**Required** The Cloudflare API Key.
+
+## Inputs
+
+### `namespace_identifier`
+
+**Required** The Cloudflare namespace of the KV worker.
 
 ## Outputs
 
@@ -73,7 +81,19 @@ jobs:
         run: |
           curl -X GET "https://www.example.com/api/revalidate?secret=${{secrets.REVALIDATE_TOKEN}}&slug=${{steps.update-slug.outputs.slug}}"
 ```
-## To Publish
-1. Edit
-2. Run `npm run publish`
-3. commit all changed files and push to remote
+
+## Customizing
+
+If you are going to clone this and modify it, there are a few things to note.
+
+1. Run `npm run publish` before committing to Github to be run as an action. This is what compiles the .ts files and creates the `/dist` and `/lib` directories with .js files able to be run as a Github Action.
+2. commit all changed files and push to remote, including the `node_modules`
+3. This can be automated with Husky / git hooks probably, but its not done yet
+
+### Resources
+
+- [Github Typescript Action Starter](https://github.com/actions/typescript-action)
+
+- [Github GraphQL Docs](https://docs.github.com/en/graphql/reference/interfaces)
+
+- [Cloudflare KV Docs](https://developers.cloudflare.com/api/operations/workers-kv-namespace-read-the-metadata-for-a-key)

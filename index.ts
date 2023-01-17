@@ -1,64 +1,54 @@
 import * as core from "@actions/core"
 //@ts-nocheck
-// import core from "@actions/core"
 import * as github from "@actions/github"
 import { del, get, set } from "./cloudflare"
-// import fetch from "node-fetch"
+
 async function run(): Promise<void> {
+  let keyExists: boolean | undefined = undefined
+  let valuesMatch: boolean | undefined = undefined
+  let result: string | {} | undefined = undefined
+
   try {
     // This should be triggerd with the issue, so will have that payload
     const { action, issue, changes } = github.context.payload
-    // Cloudflare
     if (!issue) throw `No Issue input`
-    // const account = core.getInput("cloudflare_account_id")
-    // const namespace = core.getInput("cloudflare_namespace_id")
-    // const namespace = core.getInput("namespace_identifier")
     const slug = slugify(issue?.title)
     if (!slug) throw `Slug not defined: ${slug}`
     console.log(`Title: ${issue.title} => Slug: ${slug}`)
-    // console.log(`Slug: ${slug}!`)
-
-    // let updateKey = true
-    let keyExists = undefined
-    let valuesMatch = undefined
-    let result = undefined
-    // const checkKey = await kv({ key: slug })
+    // See if value exists already
     const checkKey = await get({ key: slug })
     // console.log(checkKey, typeof checkKey, typeof issue.number)
     if (typeof checkKey === "string") {
+      // If Value exists, it will be a string
       result = checkKey
       keyExists = true
       valuesMatch = checkKey == issue.number.toString()
     } else if (typeof checkKey === "object") {
+      // Value not found
       result = checkKey.result
       keyExists = checkKey.result !== null
       valuesMatch = checkKey.result == issue.number
     }
     // console.log(result, keyExists, valuesMatch)
-    // console.log(`Value of ${slug}: ${checkKey.result}`)
-    // if (!checkKey.success) {
-    //   console.log(checkKey)
-    //   core.notice(checkKey.errors)
-    // }
 
+    // Update Value on Cloudflare KV
     if (action === "deleted" && keyExists) {
       await del({ key: slug })
     } else if (keyExists && valuesMatch) {
       console.log(`No update needed for key: ${result} -> ${issue.number}`)
-      // return //`Done`
     } else if (keyExists && !valuesMatch) {
       console.log(`Key '${result}' exists, but needs updating to ${issue.number}`)
       await set({ key: slug, value: issue.number })
     } else if (!keyExists) {
       console.log(`Key '${slug}' doesnt exist. `)
       await set({ key: slug, value: issue.number })
-      // await updateSlug(slug, issue.number)
     }
+
+    // Delete previous Slug on Issue title change
     if (action === "edited") {
       const oldSlug = slugify(changes?.title?.from)
       if (oldSlug && slug !== oldSlug) {
-        console.log(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`)
-        // console.log(`Need to delete old slug: ${oldSlug}`)
+        core.info(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`)
         await del({ key: oldSlug })
       }
     }

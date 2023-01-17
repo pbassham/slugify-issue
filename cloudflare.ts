@@ -23,17 +23,8 @@ const namespaceId = core.getInput("namespace_identifier")
 // const value = core.getInput("value")
 // const expirationTtl = core.getInput("expiration_ttl")
 // const expiration = core.getInput("expiration")
-export async function set({
-  key,
-  value,
-  expiration,
-  expirationTtl,
-}: {
-  key: string
-  value: string | number
-  expiration?: number
-  expirationTtl?: number
-}): Promise<CFResponse> {
+
+export async function set({ key, value, expiration, expirationTtl }: ISet): Promise<CFResponse> {
   core.info(`SETTING value for "${key}" to "${value}"`)
   let url = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
 
@@ -67,8 +58,7 @@ export async function set({
   const json: CFResponse = JSON.parse(data)
   return json
 }
-
-export async function get({ key }: { key: string }): Promise<CFResponse | string> {
+export async function get({ key }: IKey): Promise<CFResponse | string> {
   core.info(`FETCHING value for Key: "${key}"`)
   const kvUrl = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
   const response = await fetch(kvUrl, {
@@ -88,7 +78,7 @@ export async function get({ key }: { key: string }): Promise<CFResponse | string
     return json
   }
 }
-export async function del({ key }: { key: string }): Promise<CFResponse> {
+export async function del({ key }: IKey): Promise<CFResponse> {
   core.info(`DELETING value for Key: "${key}"`)
   const kvUrl = `https://api.cloudflare.com/client/${API_VERSION}/accounts/${accountId}/storage/kv/namespaces/${namespaceId}/values/${key}`
   const response = await fetch(kvUrl, {
@@ -136,4 +126,14 @@ type CFResponse = {
 type CFMessage = {
   code: number
   message: string
+}
+
+interface IKey {
+  key: string
+}
+interface ISet {
+  key: string
+  value: string | number
+  expiration?: number
+  expirationTtl?: number
 }
