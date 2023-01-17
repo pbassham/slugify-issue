@@ -1,19 +1,20 @@
 //@ts-nocheck
-import * as core from '@actions/core'
+import * as core from "@actions/core"
 // import core from "@actions/core"
 import * as github from "@actions/github"
-import { kv } from "./cloudflare"
+import { del, get, set } from "./cloudflare"
 // import fetch from "node-fetch"
 async function run(): Promise<void> {
   try {
     // This should be triggerd with the issue, so will have that payload
     const { action, issue, changes } = github.context.payload
     // Cloudflare
-
+    if (!issue) throw `No Issue input`
     // const account = core.getInput("cloudflare_account_id")
     // const namespace = core.getInput("cloudflare_namespace_id")
     // const namespace = core.getInput("namespace_identifier")
     const slug = slugify(issue?.title)
+    if (!slug) throw `Slug not defined: ${slug}`
     console.log(`Title: ${issue.title} => Slug: ${slug}`)
     // console.log(`Slug: ${slug}!`)
 
@@ -21,9 +22,10 @@ async function run(): Promise<void> {
     let keyExists = undefined
     let valuesMatch = undefined
     let result = undefined
-    const checkKey = await kv({ key: slug })
-    // console.log(checkKey, typeof checkKey, typeof issue.number)
-    if (typeof checkKey === "number") {
+    // const checkKey = await kv({ key: slug })
+    const checkKey = await get({ key: slug })
+    console.log(checkKey, typeof checkKey, typeof issue.number)
+    if (typeof checkKey === "number" || typeof checkKey === "string") {
       result = checkKey
       keyExists = true
       valuesMatch = checkKey == issue.number
@@ -40,23 +42,24 @@ async function run(): Promise<void> {
     // }
 
     if (action === "deleted" && keyExists) {
-      await deleteSlug(slug)
+      await del({ key: slug })
     } else if (keyExists && valuesMatch) {
       console.log(`No update needed for key: ${result} -> ${issue.number}`)
       // return //`Done`
     } else if (keyExists && !valuesMatch) {
       console.log(`Key '${result}' exists, but needs updating to ${issue.number}`)
-      await updateSlug(slug, issue.number)
+      await set({ key: slug, value: issue.number })
     } else if (!keyExists) {
       console.log(`Key '${slug}' doesnt exist. `)
-      await updateSlug(slug, issue.number)
+      await set({ key: slug, value: issue.number })
+      // await updateSlug(slug, issue.number)
     }
     if (action === "edited") {
       const oldSlug = slugify(changes?.title?.from)
       if (oldSlug && slug !== oldSlug) {
         console.log(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`)
         // console.log(`Need to delete old slug: ${oldSlug}`)
-        await deleteSlug(oldSlug)
+        await del({ key: oldSlug })
       }
     }
 
@@ -77,7 +80,7 @@ async function run(): Promise<void> {
 }
 run()
 
-function slugify(text) {
+function slugify(text: string): string | null {
   // console.log(text);
   // console.log(typeof text);
   if (!text || typeof text !== "string") return null
@@ -93,29 +96,29 @@ function slugify(text) {
   ) // Replace multiple - with single -
 }
 
-async function updateSlug(key, value) {
-  // console.log(`Updating Key: "${key}" to Value "${value}"`)
-  const res = await kv({ key, value })
-  if (!res.success) {
-    console.log(res)
-    core.error(res.errors)
-    throw res
-  }
-  return res
-}
-// async function addSlug(key, value) {
-//   return await kv({ key, value })
+// async function updateSlug(key, value) {
+//   // console.log(`Updating Key: "${key}" to Value "${value}"`)
+//   const res = await kv({ key, value })
+//   if (!res.success) {
+//     console.log(res)
+//     core.error(res.errors)
+//     throw res
+//   }
+//   return res
 // }
-async function deleteSlug(slug) {
-  // console.log(`Deleting Slug: ${slug}`)
-  const res = await kv({ key: slug, DELETE: true })
-  if (!res.success) {
-    console.log(res)
-    core.error(res.errors)
-    throw res
-  }
-  return res
-}
+// // async function addSlug(key, value) {
+// //   return await kv({ key, value })
+// // }
+// async function deleteSlug(slug) {
+//   // console.log(`Deleting Slug: ${slug}`)
+//   const res = await kv({ key: slug, DELETE: true })
+//   if (!res.success) {
+//     console.log(res)
+//     core.error(res.errors)
+//     throw res
+//   }
+//   return res
+// }
 
 // async function revalidate(slug) {
 //   const REVALIDATE_TOKEN = core.getInput("revalidate_token")
