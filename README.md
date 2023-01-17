@@ -73,3 +73,7 @@ jobs:
         run: |
           curl -X GET "https://www.example.com/api/revalidate?secret=${{secrets.REVALIDATE_TOKEN}}&slug=${{steps.update-slug.outputs.slug}}"
 ```
+## To Publish
+1. Edit
+2. Run `npm run publish`
+3. commit all changed files and push to remote
