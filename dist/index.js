@@ -158,21 +158,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 //@ts-nocheck
 const core = __importStar(__nccwpck_require__(2186));
 // import core from "@actions/core"
-const github_1 = __importDefault(__nccwpck_require__(5438));
+const github = __importStar(__nccwpck_require__(5438));
 const cloudflare_1 = __nccwpck_require__(5588);
 // import fetch from "node-fetch"
 async function run() {
     var _a;
     try {
         // This should be triggerd with the issue, so will have that payload
-        const { action, issue, changes } = github_1.default.context.payload;
+        const { action, issue, changes } = github.context.payload;
         // Cloudflare
         // const account = core.getInput("cloudflare_account_id")
         // const namespace = core.getInput("cloudflare_namespace_id")
@@ -230,12 +227,12 @@ async function run() {
         core.setOutput("issue_number", issue.number);
         // core.setOutput("needsUpdate", updateKey)
         // Get the JSON webhook payload for the event that triggered the workflow
-        const payload = JSON.stringify(github_1.default.context.payload, undefined, 2);
+        const payload = JSON.stringify(github.context.payload, undefined, 2);
         console.log(`\nThe event payload: ${payload}`);
     }
     catch (error) {
         // Get the JSON webhook payload for the event that triggered the workflow
-        const payload = JSON.stringify(github_1.default.context.payload, undefined, 2);
+        const payload = JSON.stringify(github.context.payload, undefined, 2);
         console.log(`\nThe event payload: ${payload}`);
         core.setFailed(error.message);
     }
