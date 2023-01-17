@@ -165,8 +165,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-//@ts-nocheck
 const core = __importStar(__nccwpck_require__(2186));
+//@ts-nocheck
 // import core from "@actions/core"
 const github = __importStar(__nccwpck_require__(5438));
 const cloudflare_1 = __nccwpck_require__(5588);
@@ -194,10 +194,10 @@ async function run() {
         // const checkKey = await kv({ key: slug })
         const checkKey = await (0, cloudflare_1.get)({ key: slug });
         console.log(checkKey, typeof checkKey, typeof issue.number);
-        if (typeof checkKey === "number" || typeof checkKey === "string") {
+        if (typeof checkKey === "string") {
             result = checkKey;
             keyExists = true;
-            valuesMatch = checkKey == issue.number;
+            valuesMatch = checkKey == issue.number.toString();
         }
         else if (typeof checkKey === "object") {
             result = checkKey.result;
@@ -245,8 +245,9 @@ async function run() {
     catch (error) {
         // Get the JSON webhook payload for the event that triggered the workflow
         const payload = JSON.stringify(github.context.payload, undefined, 2);
-        console.log(`\nThe event payload: ${payload}`);
-        core.setFailed(error.message);
+        console.error(`\nThe event payload: ${payload}`);
+        //@ts-expect-error
+        core.setFailed(error === null || error === void 0 ? void 0 : error.message);
     }
 }
 run();

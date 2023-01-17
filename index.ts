@@ -1,5 +1,5 @@
-//@ts-nocheck
 import * as core from "@actions/core"
+//@ts-nocheck
 // import core from "@actions/core"
 import * as github from "@actions/github"
 import { del, get, set } from "./cloudflare"
@@ -25,10 +25,10 @@ async function run(): Promise<void> {
     // const checkKey = await kv({ key: slug })
     const checkKey = await get({ key: slug })
     console.log(checkKey, typeof checkKey, typeof issue.number)
-    if (typeof checkKey === "number" || typeof checkKey === "string") {
+    if (typeof checkKey === "string") {
       result = checkKey
       keyExists = true
-      valuesMatch = checkKey == issue.number
+      valuesMatch = checkKey == issue.number.toString()
     } else if (typeof checkKey === "object") {
       result = checkKey.result
       keyExists = checkKey.result !== null
@@ -74,8 +74,9 @@ async function run(): Promise<void> {
   } catch (error) {
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`\nThe event payload: ${payload}`)
-    core.setFailed(error.message)
+    console.error(`\nThe event payload: ${payload}`)
+    //@ts-expect-error
+    core.setFailed(error?.message)
   }
 }
 run()
