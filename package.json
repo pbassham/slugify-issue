@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish": "npm run build && npm run package"
   },
-  "type": "module",
+  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/actions/hello-world-javascript-action.git"
