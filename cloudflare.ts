@@ -1,5 +1,6 @@
 // @ts-nocheck
-import core from "@actions/core"
+import * as core from '@actions/core'
+// import core from "@actions/core"
 import fetch from "node-fetch"
 
 const API_VERSION = "v4"
@@ -74,7 +75,7 @@ async function del(key) {
   return JSON.parse(data)
 }
 
-export default async function kv({ key, value, expiration, expirationTtl, DELETE }) {
+export async function kv({ key, value, expiration, expirationTtl, DELETE }) {
   //   console.log(`kv key: ${key} value:${value}`)
   if (DELETE === true) {
     core.info(`DELETING value for Key: "${key}"`)
@@ -90,3 +91,5 @@ export default async function kv({ key, value, expiration, expirationTtl, DELETE
     return get(key)
   }
 }
+
+export default kv

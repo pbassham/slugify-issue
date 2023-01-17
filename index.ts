@@ -1,5 +1,6 @@
 //@ts-nocheck
-import core from "@actions/core"
+import * as core from '@actions/core'
+// import core from "@actions/core"
 import github from "@actions/github"
 import { kv } from "./cloudflare"
 // import fetch from "node-fetch"

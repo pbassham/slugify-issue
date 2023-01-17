@@ -6,18 +6,43 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.kv = void 0;
 // @ts-nocheck
-const core_1 = __importDefault(__nccwpck_require__(2186));
+const core = __importStar(__nccwpck_require__(2186));
+// import core from "@actions/core"
 const node_fetch_1 = __importDefault(__nccwpck_require__(4429));
 const API_VERSION = "v4";
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
 const apiKey = process.env.CLOUDFLARE_API_KEY;
 const accountEmail = process.env.CLOUDFLARE_ACCOUNT_EMAIL;
-const namespaceId = core_1.default.getInput("namespace_identifier");
+const namespaceId = core.getInput("namespace_identifier");
 const headers = accountEmail
     ? {
         "X-Auth-Key": apiKey,
@@ -85,20 +110,21 @@ async function del(key) {
 async function kv({ key, value, expiration, expirationTtl, DELETE }) {
     //   console.log(`kv key: ${key} value:${value}`)
     if (DELETE === true) {
-        core_1.default.info(`DELETING value for Key: "${key}"`);
+        core.info(`DELETING value for Key: "${key}"`);
         return del(key);
     }
     else if (value
     // && (value.length > 0 || Object.keys(value).length > 0)
     ) {
-        core_1.default.info(`SETTING value for "${key}" to "${value}"`);
+        core.info(`SETTING value for "${key}" to "${value}"`);
         return set(key, value, expirationTtl);
     }
     else {
-        core_1.default.info(`FETCHING value for Key: "${key}"`);
+        core.info(`FETCHING value for Key: "${key}"`);
         return get(key);
     }
 }
+exports.kv = kv;
 exports["default"] = kv;
 
 
@@ -109,12 +135,36 @@ exports["default"] = kv;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 //@ts-nocheck
-const core_1 = __importDefault(__nccwpck_require__(2186));
+const core = __importStar(__nccwpck_require__(2186));
+// import core from "@actions/core"
 const github_1 = __importDefault(__nccwpck_require__(5438));
 const cloudflare_1 = __nccwpck_require__(5588);
 // import fetch from "node-fetch"
@@ -176,8 +226,8 @@ async function run() {
             }
         }
         // await revalidate(slug)
-        core_1.default.setOutput("slug", slug);
-        core_1.default.setOutput("issue_number", issue.number);
+        core.setOutput("slug", slug);
+        core.setOutput("issue_number", issue.number);
         // core.setOutput("needsUpdate", updateKey)
         // Get the JSON webhook payload for the event that triggered the workflow
         const payload = JSON.stringify(github_1.default.context.payload, undefined, 2);
@@ -187,7 +237,7 @@ async function run() {
         // Get the JSON webhook payload for the event that triggered the workflow
         const payload = JSON.stringify(github_1.default.context.payload, undefined, 2);
         console.log(`\nThe event payload: ${payload}`);
-        core_1.default.setFailed(error.message);
+        core.setFailed(error.message);
     }
 }
 run();
@@ -210,7 +260,7 @@ async function updateSlug(key, value) {
     const res = await (0, cloudflare_1.kv)({ key, value });
     if (!res.success) {
         console.log(res);
-        core_1.default.error(res.errors);
+        core.error(res.errors);
         throw res;
     }
     return res;
@@ -223,7 +273,7 @@ async function deleteSlug(slug) {
     const res = await (0, cloudflare_1.kv)({ key: slug, DELETE: true });
     if (!res.success) {
         console.log(res);
-        core_1.default.error(res.errors);
+        core.error(res.errors);
         throw res;
     }
     return res;
