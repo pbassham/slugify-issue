@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //@ts-nocheck
 const core_1 = __importDefault(require("@actions/core"));
 const github_1 = __importDefault(require("@actions/github"));
-const cloudflare_js_1 = __importDefault(require("./cloudflare.js"));
+const cloudflare_1 = require("./cloudflare");
 // import fetch from "node-fetch"
 async function run() {
     var _a;
@@ -30,7 +30,7 @@ async function run() {
         let keyExists = undefined;
         let valuesMatch = undefined;
         let result = undefined;
-        const checkKey = await (0, cloudflare_js_1.default)({ key: slug });
+        const checkKey = await (0, cloudflare_1.kv)({ key: slug });
         // console.log(checkKey, typeof checkKey, typeof issue.number)
         if (typeof checkKey === "number") {
             result = checkKey;
@@ -103,7 +103,7 @@ function slugify(text) {
 }
 async function updateSlug(key, value) {
     // console.log(`Updating Key: "${key}" to Value "${value}"`)
-    const res = await (0, cloudflare_js_1.default)({ key, value });
+    const res = await (0, cloudflare_1.kv)({ key, value });
     if (!res.success) {
         console.log(res);
         core_1.default.error(res.errors);
@@ -116,7 +116,7 @@ async function updateSlug(key, value) {
 // }
 async function deleteSlug(slug) {
     // console.log(`Deleting Slug: ${slug}`)
-    const res = await (0, cloudflare_js_1.default)({ key: slug, DELETE: true });
+    const res = await (0, cloudflare_1.kv)({ key: slug, DELETE: true });
     if (!res.success) {
         console.log(res);
         core_1.default.error(res.errors);

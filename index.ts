@@ -1,7 +1,7 @@
 //@ts-nocheck
 import core from "@actions/core"
 import github from "@actions/github"
-import kv from "./cloudflare.js"
+import { kv } from "./cloudflare"
 // import fetch from "node-fetch"
 async function run(): Promise<void> {
   try {
