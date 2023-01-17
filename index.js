@@ -21,7 +21,7 @@ try {
   let result = undefined
   const checkKey = await kv({ key: slug })
   console.log(checkKey, typeof checkKey, typeof issue.number)
-  if (typeof checkKey === "string") {
+  if (typeof checkKey === "number") {
     result = checkKey
     keyExists = true
     valuesMatch = checkKey == issue.number.toString()
