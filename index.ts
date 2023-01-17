@@ -3,77 +3,78 @@ import core from "@actions/core"
 import github from "@actions/github"
 import kv from "./cloudflare.js"
 // import fetch from "node-fetch"
+async function run(): Promise<void> {
+  try {
+    // This should be triggerd with the issue, so will have that payload
+    const { action, issue, changes } = github.context.payload
+    // Cloudflare
 
-try {
-  // This should be triggerd with the issue, so will have that payload
-  const { action, issue, changes } = github.context.payload
-  // Cloudflare
+    // const account = core.getInput("cloudflare_account_id")
+    // const namespace = core.getInput("cloudflare_namespace_id")
+    // const namespace = core.getInput("namespace_identifier")
+    const slug = slugify(issue?.title)
+    console.log(`Title: ${issue.title} => Slug: ${slug}`)
+    // console.log(`Slug: ${slug}!`)
 
-  // const account = core.getInput("cloudflare_account_id")
-  // const namespace = core.getInput("cloudflare_namespace_id")
-  // const namespace = core.getInput("namespace_identifier")
-  const slug = slugify(issue?.title)
-  console.log(`Title: ${issue.title} => Slug: ${slug}`)
-  // console.log(`Slug: ${slug}!`)
-
-  // let updateKey = true
-  let keyExists = undefined
-  let valuesMatch = undefined
-  let result = undefined
-  const checkKey = await kv({ key: slug })
-  // console.log(checkKey, typeof checkKey, typeof issue.number)
-  if (typeof checkKey === "number") {
-    result = checkKey
-    keyExists = true
-    valuesMatch = checkKey == issue.number
-  } else if (typeof checkKey === "object") {
-    result = checkKey.result
-    keyExists = checkKey.result !== null
-    valuesMatch = checkKey.result == issue.number
-  }
-  // console.log(result, keyExists, valuesMatch)
-  // console.log(`Value of ${slug}: ${checkKey.result}`)
-  // if (!checkKey.success) {
-  //   console.log(checkKey)
-  //   core.notice(checkKey.errors)
-  // }
-
-  if (action === "deleted" && keyExists) {
-    await deleteSlug(slug)
-  } else if (keyExists && valuesMatch) {
-    console.log(`No update needed for key: ${result} -> ${issue.number}`)
-    // return //`Done`
-  } else if (keyExists && !valuesMatch) {
-    console.log(`Key '${result}' exists, but needs updating to ${issue.number}`)
-    await updateSlug(slug, issue.number)
-  } else if (!keyExists) {
-    console.log(`Key '${slug}' doesnt exist. `)
-    await updateSlug(slug, issue.number)
-  }
-  if (action === "edited") {
-    const oldSlug = slugify(changes?.title?.from)
-    if (oldSlug && slug !== oldSlug) {
-      console.log(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`)
-      // console.log(`Need to delete old slug: ${oldSlug}`)
-      await deleteSlug(oldSlug)
+    // let updateKey = true
+    let keyExists = undefined
+    let valuesMatch = undefined
+    let result = undefined
+    const checkKey = await kv({ key: slug })
+    // console.log(checkKey, typeof checkKey, typeof issue.number)
+    if (typeof checkKey === "number") {
+      result = checkKey
+      keyExists = true
+      valuesMatch = checkKey == issue.number
+    } else if (typeof checkKey === "object") {
+      result = checkKey.result
+      keyExists = checkKey.result !== null
+      valuesMatch = checkKey.result == issue.number
     }
+    // console.log(result, keyExists, valuesMatch)
+    // console.log(`Value of ${slug}: ${checkKey.result}`)
+    // if (!checkKey.success) {
+    //   console.log(checkKey)
+    //   core.notice(checkKey.errors)
+    // }
+
+    if (action === "deleted" && keyExists) {
+      await deleteSlug(slug)
+    } else if (keyExists && valuesMatch) {
+      console.log(`No update needed for key: ${result} -> ${issue.number}`)
+      // return //`Done`
+    } else if (keyExists && !valuesMatch) {
+      console.log(`Key '${result}' exists, but needs updating to ${issue.number}`)
+      await updateSlug(slug, issue.number)
+    } else if (!keyExists) {
+      console.log(`Key '${slug}' doesnt exist. `)
+      await updateSlug(slug, issue.number)
+    }
+    if (action === "edited") {
+      const oldSlug = slugify(changes?.title?.from)
+      if (oldSlug && slug !== oldSlug) {
+        console.log(`Old Slug to delete: "${oldSlug}". (New Slug: "${slug}")`)
+        // console.log(`Need to delete old slug: ${oldSlug}`)
+        await deleteSlug(oldSlug)
+      }
+    }
+
+    // await revalidate(slug)
+    core.setOutput("slug", slug)
+    core.setOutput("issue_number", issue.number)
+    // core.setOutput("needsUpdate", updateKey)
+
+    // Get the JSON webhook payload for the event that triggered the workflow
+    const payload = JSON.stringify(github.context.payload, undefined, 2)
+    console.log(`\nThe event payload: ${payload}`)
+  } catch (error) {
+    // Get the JSON webhook payload for the event that triggered the workflow
+    const payload = JSON.stringify(github.context.payload, undefined, 2)
+    console.log(`\nThe event payload: ${payload}`)
+    core.setFailed(error.message)
   }
-
-  // await revalidate(slug)
-  core.setOutput("slug", slug)
-  core.setOutput("issue_number", issue.number)
-  // core.setOutput("needsUpdate", updateKey)
-
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`\nThe event payload: ${payload}`)
-} catch (error) {
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`\nThe event payload: ${payload}`)
-  core.setFailed(error.message)
 }
-// }
+run()
 
 function slugify(text) {
   // console.log(text);
