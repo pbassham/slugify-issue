@@ -16,23 +16,33 @@ try {
   // console.log(`Slug: ${slug}!`)
 
   // let updateKey = true
-
+  let keyExists = undefined
+  let valuesMatch = undefined
+  let result = undefined
   const checkKey = await kv({ key: slug })
+  console.log(checkKey)
+  if (typeof checkKey === "string") {
+    result = checkKey
+    keyExists = true
+    valuesMatch = checkKey == issue.number.toString()
+  } else if (typeof checkKey === "object") {
+    result = checkKey.result
+    keyExists = checkKey.result !== null
+    valuesMatch = checkKey.result == issue.number
+  }
   // console.log(`Value of ${slug}: ${checkKey.result}`)
   // if (!checkKey.success) {
   //   console.log(checkKey)
   //   core.notice(checkKey.errors)
   // }
-  const keyExists = checkKey.result !== null
-  const valuesMatch = checkKey.result == issue.number
 
   if (action === "deleted" && keyExists) {
     await deleteSlug(slug)
   } else if (keyExists && valuesMatch) {
-    console.log(`No update needed for key: ${checkKey.result} -> ${issue.number}`)
+    console.log(`No update needed for key: ${result} -> ${issue.number}`)
     // return //`Done`
   } else if (keyExists && !valuesMatch) {
-    console.log(`Key '${checkKey.result}' exists, but needs updating to ${issue.number}`)
+    console.log(`Key '${result}' exists, but needs updating to ${issue.number}`)
     await updateSlug(slug, issue.number)
   } else if (!keyExists) {
     console.log(`Key '${slug}' doesnt exist. `)
@@ -67,14 +77,16 @@ function slugify(text) {
   // console.log(text);
   // console.log(typeof text);
   if (!text || typeof text !== "string") return null
-  return text
-    // .toString() // Cast to string (optional)
-    .normalize("NFKD") // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
-    .toLowerCase() // Convert the string to lowercase letters
-    .trim() // Remove whitespace from both sides of a string (optional)
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
-    .replace(/\-\-+/g, "-") // Replace multiple - with single -
+  return (
+    text
+      // .toString() // Cast to string (optional)
+      .normalize("NFKD") // The normalize() using NFKD method returns the Unicode Normalization Form of a given string.
+      .toLowerCase() // Convert the string to lowercase letters
+      .trim() // Remove whitespace from both sides of a string (optional)
+      .replace(/\s+/g, "-") // Replace spaces with -
+      .replace(/[^\w\-]+/g, "") // Remove all non-word chars
+      .replace(/\-\-+/g, "-")
+  ) // Replace multiple - with single -
 }
 
 async function updateSlug(key, value) {
