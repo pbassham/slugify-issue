@@ -1,3 +1,4 @@
+// @ts-nocheck
 import core from "@actions/core"
 import fetch from "node-fetch"
 

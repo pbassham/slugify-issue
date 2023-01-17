@@ -1,3 +1,4 @@
+//@ts-nocheck
 import core from "@actions/core"
 import github from "@actions/github"
 import kv from "./cloudflare.js"
@@ -20,17 +21,17 @@ try {
   let valuesMatch = undefined
   let result = undefined
   const checkKey = await kv({ key: slug })
-  console.log(checkKey, typeof checkKey, typeof issue.number)
+  // console.log(checkKey, typeof checkKey, typeof issue.number)
   if (typeof checkKey === "number") {
     result = checkKey
     keyExists = true
-    valuesMatch = checkKey == issue.number.toString()
+    valuesMatch = checkKey == issue.number
   } else if (typeof checkKey === "object") {
     result = checkKey.result
     keyExists = checkKey.result !== null
     valuesMatch = checkKey.result == issue.number
   }
-  console.log(result, keyExists, valuesMatch)
+  // console.log(result, keyExists, valuesMatch)
   // console.log(`Value of ${slug}: ${checkKey.result}`)
   // if (!checkKey.success) {
   //   console.log(checkKey)
