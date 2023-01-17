@@ -20,7 +20,7 @@ try {
   let valuesMatch = undefined
   let result = undefined
   const checkKey = await kv({ key: slug })
-  console.log(checkKey)
+  console.log(checkKey, typeof checkKey, typeof issue.number)
   if (typeof checkKey === "string") {
     result = checkKey
     keyExists = true
@@ -30,6 +30,7 @@ try {
     keyExists = checkKey.result !== null
     valuesMatch = checkKey.result == issue.number
   }
+  console.log(result, keyExists, valuesMatch)
   // console.log(`Value of ${slug}: ${checkKey.result}`)
   // if (!checkKey.success) {
   //   console.log(checkKey)
